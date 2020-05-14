@@ -1,0 +1,51 @@
+NOTES_DIR=~/notes
+
+open-notes() {
+	subl $NOTES_DIR
+}
+
+todays-note() {
+	date=$(date '+%Y-%m-%d')
+	view-note daily $date
+
+}
+
+new-daily-note() {
+	date=$(date '+%Y-%m-%d')
+	filename=$NOTES_DIR/daily/${date}.md
+	if [ -f $filename ]; then
+		echo "Note ${filename} already exists"
+	else
+		echo "# ${date}\n\n## Todos\n\n- [ ] " >> $filename 
+		echo "${filename} created"
+	fi
+}
+
+new-note() {
+	folder=$1
+	name=$2
+	formatted_name=$(echo "${name}" | tr "-" " ")
+	datetime=$(date '+%d-%m-%Y %H:%M:%S')
+	filename=$NOTES_DIR/${folder}/${name}.md
+	if [ -f $filename ]; then
+		echo "${filename} already exists"
+		exit 0
+	else
+		echo "*${datetime}\n\n# ${formatted_name}" >> $filename
+		echo "${filename} created"
+	fi
+}
+
+view-note() {
+	folder=$1
+	name=$2
+	
+	filename=$NOTES_DIR/${folder}/${name}.md
+	if [ -f $filename ]; then
+		content=$(mdv $filename)
+		echo $content
+	else
+		echo "${filename} does not exist"
+	fi
+
+}
